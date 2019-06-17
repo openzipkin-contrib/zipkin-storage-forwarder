@@ -1,0 +1,6 @@
+# When enabled, this allows shorter env properties (ex -Dspring.profiles.active=urlconnection-reporter)
+zipkin:
+  storage:
+    urlconnection-reporter:
+      endpoint: ${URLCONNECTION_REPORTER_ENDPOINT}
+      encoding: ${URLCONNECTION_REPORTER_ENCODING:JSON}

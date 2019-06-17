@@ -1,0 +1,7 @@
+# When enabled, this allows shorter env properties (ex -Dspring.profiles.active=urlconnection-reporter)
+zipkin:
+  storage:
+    kafka-reporter:
+      endpoint: ${KAFKA_REPORTER_BOOTSTRAP_SERVERS:localhost:9092}
+      encoding: ${KAFKA_REPORTER_ENCODING:JSON}
+      topic: ${KAFKA_REPORTER_TOPIC:zipkin}
