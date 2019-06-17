@@ -122,6 +122,56 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <!-- mvn -N io.takari:maven:wrapper generates the ./mvnw script -->
+        <plugin>
+          <groupId>io.takari</groupId>
+          <artifactId>maven</artifactId>
+          <version>0.7.6</version>
+          <configuration>
+            <maven>3.6.1</maven>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+          <inherited>true</inherited>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <showWarnings>true</showWarnings>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <layoutFactory implementation="zipkin.layout.ZipkinLayoutFactory">
+              <name>zipkin</name>
+            </layoutFactory>
+            <classifier>module</classifier>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.zipkin.layout</groupId>
+              <artifactId>zipkin-layout-factory</artifactId>
+              <version>0.0.5</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
