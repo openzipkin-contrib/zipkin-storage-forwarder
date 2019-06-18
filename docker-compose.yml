@@ -1,0 +1,35 @@
+version: '3'
+services:
+  forwarder-http:
+    build:
+      context: .
+      dockerfile: Dockerfile.http
+    ports:
+      - 9412:9411
+    environment:
+      - URLCONNECTION_REPORTER_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - URLCONNECTION_REPORTER_ENCODING=PROTO3
+  forwarder-kafka:
+    build:
+      context: .
+      dockerfile: Dockerfile.kafka
+    ports:
+      - 9413:9411
+    environment:
+      - KAFKA_REPORTER_BOOTSTRAP_SERVERS=kafka-zookeeper:9092
+      - KAFKA_REPORTER_ENCODING=PROTO3
+  kafka-zookeeper:
+    image: openzipkin/zipkin-kafka
+    container_name: kafka-zookeeper
+    ports:
+      - 2181:2181
+      - 9092:9092
+      - 19092:19092
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka-zookeeper:9092
+    depends_on:
+      - kafka-zookeeper
