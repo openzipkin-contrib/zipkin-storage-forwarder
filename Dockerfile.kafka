@@ -1,0 +1,31 @@
+FROM openjdk:8
+
+ARG FORWARDER_STORAGE_VERSION=0.1.0-SNAPSHOT
+
+ENV ZIPKIN_REPO https://repo1.maven.org/maven2
+ENV ZIPKIN_VERSION 2.14.2
+ENV ZIPKIN_LOGGING_LEVEL INFO
+
+# Use to set heap, trust store or other system properties.
+ENV JAVA_OPTS -Djava.security.egd=file:/dev/./urandom
+# Add environment settings for supported storage types
+WORKDIR /zipkin
+
+RUN curl -SL $ZIPKIN_REPO/io/zipkin/zipkin-server/$ZIPKIN_VERSION/zipkin-server-$ZIPKIN_VERSION-exec.jar > zipkin.jar
+
+ADD kafka/target/zipkin-storage-reporter-kafka-${FORWARDER_STORAGE_VERSION}.jar forwarder.jar
+ADD autoconfigure/kafka/target/zipkin-storage-reporter-kafka-autoconfigure-${FORWARDER_STORAGE_VERSION}-module.jar forwarder-module.jar
+
+# ENV STORAGE_TYPE=kafka-reporter
+
+EXPOSE 9410 9411
+
+CMD exec java \
+    ${JAVA_OPTS} \
+    -Dloader.path='forwarder.jar,forwarder-module.jar' \
+    -Dspring.profiles.active=kafka-reporter \
+    -Dcom.linecorp.armeria.annotatedServiceExceptionVerbosity=all \
+    -Dcom.linecorp.armeria.verboseExceptions=true \
+    -cp zipkin.jar \
+    org.springframework.boot.loader.PropertiesLauncher \
+    --logging.level.zipkin2=${ZIPKIN_LOGGING_LEVEL}
