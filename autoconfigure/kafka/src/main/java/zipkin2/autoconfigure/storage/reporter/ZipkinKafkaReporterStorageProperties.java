@@ -15,18 +15,19 @@ package zipkin2.autoconfigure.storage.reporter;
 
 import java.io.Serializable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import zipkin2.codec.Encoding;
 import zipkin2.storage.StorageComponent;
 import zipkin2.storage.reporter.ZipkinKafkaReporterStorage;
 
-@ConfigurationProperties("zipkin.storage.reporter")
+@ConfigurationProperties("zipkin.storage.kafka-reporter")
 public class ZipkinKafkaReporterStorageProperties implements Serializable {
   private static final long serialVersionUID = 0L;
 
   private String bootstrapServers;
 
-  private String topic;
+  private String topic = "zipkin";
 
-  private String encoding;
+  private String encoding = Encoding.JSON.name();
 
   public String getBootstrapServers() {
     return bootstrapServers;
@@ -54,7 +55,8 @@ public class ZipkinKafkaReporterStorageProperties implements Serializable {
 
   StorageComponent.Builder toBuilder() {
     return ZipkinKafkaReporterStorage.newBuilder()
-        .bootstrapServers(bootstrapServers)
-        .encoding(encoding);
+            .bootstrapServers(bootstrapServers)
+            .topic(topic)
+            .encoding(encoding);
   }
 }

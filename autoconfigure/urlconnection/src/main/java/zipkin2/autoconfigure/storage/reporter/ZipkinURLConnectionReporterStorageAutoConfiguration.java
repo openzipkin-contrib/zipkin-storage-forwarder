@@ -19,11 +19,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import zipkin2.storage.StorageComponent;
-import zipkin2.storage.reporter.ZipkinReporterStorage;
-import zipkin2.storage.reporter.ZipkinURLConnectionReporterStorage;
 
 @Configuration
-@EnableConfigurationProperties(ZipkinURLConnectionReporterStorage.class)
+@EnableConfigurationProperties(ZipkinURLConnectionReporterStorageProperties.class)
 @ConditionalOnProperty(name = "zipkin.storage.type", havingValue = "urlconnection-reporter")
 @ConditionalOnMissingBean(StorageComponent.class)
 public class ZipkinURLConnectionReporterStorageAutoConfiguration {

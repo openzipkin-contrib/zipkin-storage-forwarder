@@ -15,25 +15,26 @@ package zipkin2.autoconfigure.storage.reporter;
 
 import java.io.Serializable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import zipkin2.codec.Encoding;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
 import zipkin2.storage.StorageComponent;
 import zipkin2.storage.reporter.ZipkinURLConnectionReporterStorage;
 
-@ConfigurationProperties("zipkin.storage.reporter")
+@ConfigurationProperties("zipkin.storage.urlconnection-reporter")
 public class ZipkinURLConnectionReporterStorageProperties implements Serializable {
   private static final long serialVersionUID = 0L;
 
-  private String endpoint;
+  private String endpoint = "http://localhost:9411/api/v2/spans";
 
-  private String encoding;
+  private String encoding = Encoding.JSON.name();
 
-  private boolean compressionEnabled;
+  private boolean compressionEnabled = false;
 
-  private int connectTimeout;
+  private int connectTimeout = 10 * 1000;
 
-  private int readTimeout;
+  private int readTimeout =  60 * 1000;
 
-  private int messageMaxBytes;
+  private int messageMaxBytes = 5 * 1024 * 1024;
 
   public String getEndpoint() {
     return endpoint;

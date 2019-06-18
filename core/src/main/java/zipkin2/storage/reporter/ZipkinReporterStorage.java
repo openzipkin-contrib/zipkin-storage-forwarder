@@ -96,6 +96,7 @@ public abstract class ZipkinReporterStorage<S extends Sender> extends StorageCom
     }
 
     public Builder encoding(String encoding) {
+      if (encoding == null) throw new NullPointerException("encoding == null");
       this.encoding = Encoding.valueOf(encoding);
       return this;
     }
