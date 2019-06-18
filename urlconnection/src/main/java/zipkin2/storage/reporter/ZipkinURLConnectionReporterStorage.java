@@ -50,7 +50,7 @@ public class ZipkinURLConnectionReporterStorage extends ZipkinReporterStorage<UR
     }
 
     @Override public StorageComponent build() {
-      this.sender = delegate
+      this.sender = this.delegate
           .encoding(encoding)
           .messageMaxBytes(messageMaxBytes)
           .build();

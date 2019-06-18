@@ -57,7 +57,16 @@ public abstract class ZipkinReporterStorage<S extends Sender> extends StorageCom
 
   ZipkinReporterStorage(Builder<S> builder) {
     this.sender = builder.sender;
-    this.encoder = builder.encoder;
+    switch (builder.encoding) {
+      case JSON:
+        this.encoder = SpanBytesEncoder.JSON_V2;
+        break;
+      case PROTO3:
+        this.encoder = SpanBytesEncoder.PROTO3;
+        break;
+      default:
+        throw new IllegalStateException("Unsupported encoding");
+    }
   }
 
   @Override public SpanStore spanStore() {
@@ -69,10 +78,9 @@ public abstract class ZipkinReporterStorage<S extends Sender> extends StorageCom
   }
 
   public static abstract class Builder<S extends Sender> extends StorageComponent.Builder {
-    SpanBytesEncoder encoder;
     S sender;
-    Encoding encoding;
-    int messageMaxBytes;
+    Encoding encoding = Encoding.JSON;
+    int messageMaxBytes = 1_000_000;
 
     protected Builder() {
     }
@@ -96,5 +104,6 @@ public abstract class ZipkinReporterStorage<S extends Sender> extends StorageCom
       this.messageMaxBytes = messageMaxBytes;
       return this;
     }
+
   }
 }

@@ -45,7 +45,7 @@ public class ZipkinKafkaReporterStorage extends ZipkinReporterStorage<KafkaSende
     }
 
     @Override public StorageComponent build() {
-      this.sender = KafkaSender.newBuilder()
+      this.sender = this.delegate
           .messageMaxBytes(messageMaxBytes)
           .encoding(encoding)
           .build();
