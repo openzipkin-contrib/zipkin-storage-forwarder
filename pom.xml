@@ -239,6 +239,7 @@
             <exclude>**/*.md</exclude>
             <exclude>src/test/resources/**</exclude>
             <exclude>src/main/resources/**</exclude>
+            <exclude>Makefile</exclude>
           </excludes>
           <strictCheck>true</strictCheck>
         </configuration>
