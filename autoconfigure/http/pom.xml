@@ -24,7 +24,7 @@
     <version>0.1.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>zipkin-forwarder-kafka-autoconfigure</artifactId>
+  <artifactId>zipkin-forwarder-http-autoconfigure</artifactId>
 
   <properties>
     <main.basedir>${project.basedir}/../..</main.basedir>
@@ -33,7 +33,7 @@
   <dependencies>
     <dependency>
       <groupId>io.github.jeqo.zipkin</groupId>
-      <artifactId>zipkin-forwarder-kafka</artifactId>
+      <artifactId>zipkin-forwarder-http</artifactId>
     </dependency>
   </dependencies>
 

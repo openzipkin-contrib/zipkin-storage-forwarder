@@ -15,11 +15,11 @@ package zipkin2.autoconfure.storage.reporter;
 
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import zipkin2.autoconfigure.storage.forwarder.ZipkinKafkaForwarderStorageAutoConfiguration;
+import zipkin2.autoconfigure.storage.forwarder.ZipkinHttpForwarderStorageAutoConfiguration;
 
 public class Access {
 
     public static void registerReporter(AnnotationConfigApplicationContext context) {
-        context.register(PropertyPlaceholderAutoConfiguration.class, ZipkinKafkaForwarderStorageAutoConfiguration.class);
+        context.register(PropertyPlaceholderAutoConfiguration.class, ZipkinHttpForwarderStorageAutoConfiguration.class);
     }
 }

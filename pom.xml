@@ -19,20 +19,20 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.jeqo.zipkin</groupId>
-  <artifactId>zipkin-storage-reporter-parent</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <artifactId>zipkin-forwarder-parent</artifactId>
+  <version>0.1.1-SNAPSHOT</version>
 
   <modules>
     <module>core</module>
     <module>autoconfigure</module>
-    <module>urlconnection</module>
+    <module>http</module>
     <module>kafka</module>
   </modules>
 
   <packaging>pom</packaging>
 
-  <name>Zipkin Span Consumer: Reporter (Parent)</name>
-  <description>A Zipkin Consumer based on existing Reporters to pipeline tracing data between storages</description>
+  <name>Zipkin Forwarder (Parent)</name>
+  <description>A Zipkin Span Consumer based on existing Reporters to pipeline tracing data between servers</description>
   <url>http://github.com/jeqo/zipkin-span-consumer-reporter</url>
   <inceptionYear>2019</inceptionYear>
 
@@ -79,17 +79,17 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>zipkin-storage-reporter-core</artifactId>
+        <artifactId>zipkin-forwarder-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>zipkin-storage-reporter-kafka</artifactId>
+        <artifactId>zipkin-forwarder-kafka</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>zipkin-storage-reporter-urlconnection</artifactId>
+        <artifactId>zipkin-forwarder-http</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -240,6 +240,7 @@
             <exclude>src/test/resources/**</exclude>
             <exclude>src/main/resources/**</exclude>
             <exclude>Makefile</exclude>
+            <exclude>Dockerfile*</exclude>
           </excludes>
           <strictCheck>true</strictCheck>
         </configuration>

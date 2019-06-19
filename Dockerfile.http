@@ -1,6 +1,6 @@
 FROM openjdk:8
 
-ARG FORWARDER_STORAGE_VERSION=0.1.0-SNAPSHOT
+ARG FORWARDER_VERSION=0.1.1-SNAPSHOT
 
 ENV ZIPKIN_REPO https://repo1.maven.org/maven2
 ENV ZIPKIN_VERSION 2.14.2
@@ -13,10 +13,10 @@ WORKDIR /zipkin
 
 # RUN curl -SL $ZIPKIN_REPO/io/zipkin/zipkin-server/$ZIPKIN_VERSION/zipkin-server-$ZIPKIN_VERSION-exec.jar > zipkin.jar
 ADD zipkin.jar .
-ADD urlconnection/target/zipkin-storage-reporter-urlconnection-${FORWARDER_STORAGE_VERSION}.jar forwarder.jar
-ADD autoconfigure/urlconnection/target/zipkin-storage-reporter-urlconnection-autoconfigure-${FORWARDER_STORAGE_VERSION}-module.jar forwarder-module.jar
+ADD http/target/zipkin-forwarder-http-${FORWARDER_VERSION}.jar forwarder.jar
+ADD autoconfigure/http/target/zipkin-forwarder-http-autoconfigure-${FORWARDER_VERSION}-module.jar forwarder-module.jar
 
-ENV STORAGE_TYPE=urlconnection-reporter
+ENV STORAGE_TYPE=http-forwarder
 ENV SEARCH_ENABLED=false
 ENV QUERY_ENABLED=false
 
@@ -25,9 +25,7 @@ EXPOSE 9410 9411
 CMD exec java \
     ${JAVA_OPTS} \
     -Dloader.path='forwarder.jar,forwarder-module.jar' \
-    -Dspring.profiles.active=urlconnection-reporter \
-    -Dcom.linecorp.armeria.annotatedServiceExceptionVerbosity=all \
-    -Dcom.linecorp.armeria.verboseExceptions=true \
+    -Dspring.profiles.active=http-forwarder \
     -cp zipkin.jar \
     org.springframework.boot.loader.PropertiesLauncher \
     --logging.level.zipkin2=${ZIPKIN_LOGGING_LEVEL}

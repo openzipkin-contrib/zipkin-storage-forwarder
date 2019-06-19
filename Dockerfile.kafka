@@ -1,6 +1,6 @@
 FROM openjdk:8
 
-ARG FORWARDER_STORAGE_VERSION=0.1.0-SNAPSHOT
+ARG FORWARDER_VERSION=0.1.1-SNAPSHOT
 
 ENV ZIPKIN_REPO https://repo1.maven.org/maven2
 ENV ZIPKIN_VERSION 2.14.2
@@ -13,10 +13,10 @@ WORKDIR /zipkin
 
 # RUN curl -SL $ZIPKIN_REPO/io/zipkin/zipkin-server/$ZIPKIN_VERSION/zipkin-server-$ZIPKIN_VERSION-exec.jar > zipkin.jar
 ADD zipkin.jar .
-ADD kafka/target/zipkin-storage-reporter-kafka-0.1.0-SNAPSHOT.jar forwarder.jar
-ADD autoconfigure/kafka/target/zipkin-storage-reporter-kafka-autoconfigure-0.1.0-SNAPSHOT-module.jar forwarder-module.jar
+ADD kafka/target/zipkin-forwarder-kafka-${FORWARDER_VERSION}.jar forwarder.jar
+ADD autoconfigure/kafka/target/zipkin-forwarder-kafka-autoconfigure-${FORWARDER_VERSION}-module.jar forwarder-module.jar
 
-ENV STORAGE_TYPE=kafka-reporter
+ENV STORAGE_TYPE=kafka-forwarder
 ENV SEARCH_ENABLED=false
 ENV QUERY_ENABLED=false
 
@@ -25,7 +25,7 @@ EXPOSE 9410 9411
 CMD exec java \
     ${JAVA_OPTS} \
     -Dloader.path='forwarder.jar,forwarder-module.jar' \
-    -Dspring.profiles.active=kafka-reporter \
+    -Dspring.profiles.active=kafka-forwarder \
     -Dcom.linecorp.armeria.annotatedServiceExceptionVerbosity=all \
     -Dcom.linecorp.armeria.verboseExceptions=true \
     -cp zipkin.jar \

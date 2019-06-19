@@ -21,8 +21,8 @@ services:
     ports:
       - 9412:9411
     environment:
-      - URLCONNECTION_REPORTER_ENDPOINT=http://zipkin:9411/api/v2/spans
-      - URLCONNECTION_REPORTER_ENCODING=PROTO3
+      - HTTP_FORWARDER_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - HTTP_FORWARDER_ENCODING=PROTO3
       - ZIPKIN_LOGGING_LEVEL=DEBUG
   forwarder-kafka:
     build:
@@ -31,8 +31,8 @@ services:
     ports:
       - 9413:9411
     environment:
-      - KAFKA_REPORTER_BOOTSTRAP_SERVERS=kafka-zookeeper:9092
-      - KAFKA_REPORTER_ENCODING=PROTO3
+      - KAFKA_FORWARDER_BOOTSTRAP_SERVERS=kafka-zookeeper:9092
+      - KAFKA_FORWARDER_ENCODING=PROTO3
       - ZIPKIN_LOGGING_LEVEL=DEBUG
   kafka-zookeeper:
     image: openzipkin/zipkin-kafka

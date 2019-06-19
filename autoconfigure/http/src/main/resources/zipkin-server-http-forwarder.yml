@@ -1,0 +1,6 @@
+# When enabled, this allows shorter env properties (ex -Dspring.profiles.active=http-forwarder)
+zipkin:
+  storage:
+    http-forwarder:
+      endpoint: ${HTTP_FORWARDER_ENDPOINT}
+      encoding: ${HTTP_FORWARDER_ENCODING:JSON}

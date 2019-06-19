@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-zipkin2.autoconfigure.storage.reporter.ZipkinKafkaReporterStorageAutoConfiguration
+zipkin2.autoconfigure.storage.forwarder.ZipkinKafkaForwarderStorageAutoConfiguration
