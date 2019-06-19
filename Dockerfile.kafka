@@ -11,12 +11,14 @@ ENV JAVA_OPTS -Djava.security.egd=file:/dev/./urandom
 # Add environment settings for supported storage types
 WORKDIR /zipkin
 
-RUN curl -SL $ZIPKIN_REPO/io/zipkin/zipkin-server/$ZIPKIN_VERSION/zipkin-server-$ZIPKIN_VERSION-exec.jar > zipkin.jar
+# RUN curl -SL $ZIPKIN_REPO/io/zipkin/zipkin-server/$ZIPKIN_VERSION/zipkin-server-$ZIPKIN_VERSION-exec.jar > zipkin.jar
+ADD zipkin.jar .
+ADD kafka/target/zipkin-storage-reporter-kafka-0.1.0-SNAPSHOT.jar forwarder.jar
+ADD autoconfigure/kafka/target/zipkin-storage-reporter-kafka-autoconfigure-0.1.0-SNAPSHOT-module.jar forwarder-module.jar
 
-ADD kafka/target/zipkin-storage-reporter-kafka-${FORWARDER_STORAGE_VERSION}.jar forwarder.jar
-ADD autoconfigure/kafka/target/zipkin-storage-reporter-kafka-autoconfigure-${FORWARDER_STORAGE_VERSION}-module.jar forwarder-module.jar
-
-# ENV STORAGE_TYPE=kafka-reporter
+ENV STORAGE_TYPE=kafka-reporter
+ENV SEARCH_ENABLED=false
+ENV QUERY_ENABLED=false
 
 EXPOSE 9410 9411
 
