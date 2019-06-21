@@ -2,6 +2,8 @@
 
 > alpha stage
 
+[![Build Status](https://travis-ci.org/jeqo/zipkin-forwarder.svg?branch=master)](https://travis-ci.org/jeqo/zipkin-forwarder)
+
 Zipkin storage implementation to forward Spans to another server (collector).
 
 
