@@ -19,7 +19,7 @@ import zipkin2.codec.Encoding;
 import zipkin2.storage.StorageComponent;
 import zipkin2.storage.forwarder.ZipkinHttpForwarderStorage;
 
-@ConfigurationProperties("zipkin.storage.http-forwarder")
+@ConfigurationProperties("zipkin.storage.forwarder.http")
 public class ZipkinHttpForwarderStorageProperties implements Serializable {
   private static final long serialVersionUID = 0L;
 
@@ -29,11 +29,11 @@ public class ZipkinHttpForwarderStorageProperties implements Serializable {
 
   private boolean compressionEnabled = false;
 
-  private int connectTimeout = 10 * 1000;
+  private Integer connectTimeout;
 
-  private int readTimeout =  60 * 1000;
+  private Integer readTimeout;
 
-  private int messageMaxBytes = 5 * 1024 * 1024;
+  private Integer messageMaxBytes;
 
   public String getEndpoint() {
     return endpoint;
@@ -84,12 +84,13 @@ public class ZipkinHttpForwarderStorageProperties implements Serializable {
   }
 
   StorageComponent.Builder toBuilder() {
-    return ZipkinHttpForwarderStorage.newBuilder()
-        .compressionEnabled(compressionEnabled)
-        .connectTimeout(connectTimeout)
-        .readTimeout(readTimeout)
-        .endpoint(endpoint)
-        .messageMaxBytes(messageMaxBytes)
-        .encoding(encoding);
+    final ZipkinHttpForwarderStorage.Builder builder = ZipkinHttpForwarderStorage.newBuilder();
+    if (endpoint != null) builder.endpoint(endpoint);
+    if (connectTimeout != null) builder.connectTimeout(connectTimeout);
+    if (readTimeout != null) builder.readTimeout(readTimeout);
+    if (messageMaxBytes != null) builder.messageMaxBytes(messageMaxBytes);
+    return builder
+            .compressionEnabled(compressionEnabled)
+            .encoding(encoding);
   }
 }

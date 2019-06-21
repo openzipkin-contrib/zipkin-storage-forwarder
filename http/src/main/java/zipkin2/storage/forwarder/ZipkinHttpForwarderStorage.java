@@ -50,10 +50,8 @@ public class ZipkinHttpForwarderStorage extends ZipkinForwarderStorage<URLConnec
     }
 
     @Override public StorageComponent build() {
-      this.sender = this.delegate
-          .encoding(encoding)
-          .messageMaxBytes(messageMaxBytes)
-          .build();
+      if (messageMaxBytes != null) this.delegate.messageMaxBytes(messageMaxBytes);
+      this.sender = this.delegate.encoding(encoding).build();
       return new ZipkinHttpForwarderStorage(this);
     }
   }

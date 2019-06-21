@@ -80,7 +80,7 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
   public static abstract class Builder<S extends Sender> extends StorageComponent.Builder {
     S sender;
     Encoding encoding = Encoding.JSON;
-    int messageMaxBytes = 1_000_000;
+    Integer messageMaxBytes;
 
     protected Builder() {
     }
@@ -101,7 +101,7 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
       return this;
     }
 
-    public Builder messageMaxBytes(int messageMaxBytes) {
+    public Builder messageMaxBytes(Integer messageMaxBytes) {
       this.messageMaxBytes = messageMaxBytes;
       return this;
     }

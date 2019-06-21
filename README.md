@@ -2,9 +2,20 @@
 
 > alpha stage
 
-Zipkin Storage implementation to forward Spans to another collector.
+Zipkin storage implementation to forward Spans to another server (collector).
 
+
+Before:
 ```
-... client ...     ............. forwarder ...............   ..transport..   .............. zipkin server .......... 
-[ url sender ] --> [ [ url collector ]->[ kafka sender ] ] --> ( kafka ) --> [ [ kafka collector ]->[ es storage ] ]
+[ instrumented client ] --> ( transport ) --> [ zipkin server ]
 ```
+
+Now:
+```
+[ instrumented client ] --> ( transport 1 ) --> [ zipkin forwarder ] --> ( transport 2 ) --> [ zipkin server ]
+```
+
+## Supported forwarders
+
+- [HTTP](./http/README.md)
+- [Kafka](./kafka/README.md)
