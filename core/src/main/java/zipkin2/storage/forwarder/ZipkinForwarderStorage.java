@@ -17,8 +17,10 @@ import java.util.List;
 import zipkin2.Call;
 import zipkin2.DependencyLink;
 import zipkin2.Span;
+import zipkin2.codec.BytesEncoder;
 import zipkin2.codec.Encoding;
 import zipkin2.codec.SpanBytesEncoder;
+import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.storage.QueryRequest;
 import zipkin2.storage.SpanConsumer;
@@ -52,21 +54,12 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
     }
   };
 
-  final S sender;
-  final SpanBytesEncoder encoder;
+  final AsyncReporter<Span> reporter;
 
   ZipkinForwarderStorage(Builder<S> builder) {
-    this.sender = builder.sender;
-    switch (builder.encoding) {
-      case JSON:
-        this.encoder = SpanBytesEncoder.JSON_V2;
-        break;
-      case PROTO3:
-        this.encoder = SpanBytesEncoder.PROTO3;
-        break;
-      default:
-        throw new IllegalStateException("Unsupported encoding");
-    }
+    final AsyncReporter.Builder inner = AsyncReporter.builder(builder.sender());
+
+    this.reporter = inner.build();
   }
 
   @Override public SpanStore spanStore() {
@@ -78,19 +71,20 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
   }
 
   public static abstract class Builder<S extends Sender> extends StorageComponent.Builder {
-    S sender;
     Encoding encoding = Encoding.JSON;
     Integer messageMaxBytes;
 
     protected Builder() {
     }
 
-    @Override public StorageComponent.Builder strictTraceId(boolean strictTraceId) {
+    @Override
+    public Builder strictTraceId(boolean strictTraceId) {
       if (!strictTraceId) throw new IllegalArgumentException("non-strict trace ID not supported");
       return this;
     }
 
-    @Override public StorageComponent.Builder searchEnabled(boolean searchEnabled) {
+    @Override
+    public Builder searchEnabled(boolean searchEnabled) {
       if (searchEnabled) throw new IllegalArgumentException("search not supported");
       return this;
     }
@@ -106,5 +100,6 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
       return this;
     }
 
+    abstract S sender();
   }
 }

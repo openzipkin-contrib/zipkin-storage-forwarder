@@ -15,7 +15,6 @@ package zipkin2.storage.forwarder;
 
 import java.util.Map;
 
-import zipkin2.codec.Encoding;
 import zipkin2.reporter.kafka11.KafkaSender;
 import zipkin2.storage.StorageComponent;
 
@@ -47,9 +46,13 @@ public class ZipkinKafkaForwarderStorage extends ZipkinForwarderStorage<KafkaSen
     }
 
     @Override public StorageComponent build() {
-      if (messageMaxBytes != null) this.delegate.messageMaxBytes(messageMaxBytes);
-      this.sender = this.delegate.encoding(encoding).build();
       return new ZipkinKafkaForwarderStorage(this);
+    }
+
+    @Override
+    KafkaSender sender() {
+      if (messageMaxBytes != null) this.delegate.messageMaxBytes(messageMaxBytes);
+      return this.delegate.encoding(encoding).build();
     }
   }
 }

@@ -13,30 +13,68 @@
  */
 package zipkin2.storage.forwarder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import zipkin2.Call;
+import zipkin2.Callback;
 import zipkin2.Span;
 import zipkin2.codec.SpanBytesEncoder;
+import zipkin2.internal.AggregateCall;
+import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.storage.SpanConsumer;
 
 public class ZipkinForwarderSpanConsumer<S extends Sender> implements SpanConsumer {
 
-  final S sender;
-  final SpanBytesEncoder encoder;
+  final AsyncReporter<Span> reporter;
 
   ZipkinForwarderSpanConsumer(ZipkinForwarderStorage<S> storage) {
-    this.sender = storage.sender;
-    this.encoder = storage.encoder;
+    this.reporter = storage.reporter;
   }
 
   @Override public Call<Void> accept(List<Span> spans) {
-    List<byte[]> encodedList = new ArrayList<>(spans.size());
+    List<Call<Void>> calls = new ArrayList<>(spans.size());
     for (Span span: spans) {
-      encodedList.add(encoder.encode(span));
+      calls.add(new ReporterCall(reporter, span));
     }
-    return sender.sendSpans(encodedList);
+    return AggregateCall.newVoidCall(calls);
+  }
+
+  static class ReporterCall extends Call<Void> {
+    final AsyncReporter<Span> reporter;
+    final Span span;
+
+    ReporterCall(AsyncReporter<Span> reporter, Span span) {
+      this.reporter = reporter;
+      this.span = span;
+    }
+
+    @Override
+    public Void execute() throws IOException {
+      reporter.report(span);
+      return null;
+    }
+
+    @Override
+    public void enqueue(Callback<Void> callback) {
+      reporter.report(span);
+      callback.onSuccess(null); // not much we can do at this level of abstraction
+    }
+
+    @Override
+    public void cancel() {
+    }
+
+    @Override
+    public boolean isCanceled() {
+      return false;
+    }
+
+    @Override
+    public Call<Void> clone() {
+      return new ReporterCall(reporter, span);
+    }
   }
 }
