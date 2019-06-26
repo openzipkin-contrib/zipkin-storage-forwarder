@@ -20,7 +20,6 @@ import java.util.List;
 import zipkin2.Call;
 import zipkin2.Callback;
 import zipkin2.Span;
-import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.internal.AggregateCall;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
