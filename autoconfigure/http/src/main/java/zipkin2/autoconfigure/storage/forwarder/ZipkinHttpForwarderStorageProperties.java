@@ -19,11 +19,11 @@ import zipkin2.codec.Encoding;
 import zipkin2.storage.StorageComponent;
 import zipkin2.storage.forwarder.ZipkinHttpForwarderStorage;
 
-@ConfigurationProperties("zipkin.storage.forwarder.http")
+@ConfigurationProperties("zipkin.storage.http-forwarder")
 public class ZipkinHttpForwarderStorageProperties implements Serializable {
   private static final long serialVersionUID = 0L;
 
-  private String endpoint = "http://localhost:9411/api/v2/spans";
+  private String endpoint;
 
   private String encoding = Encoding.JSON.name();
 

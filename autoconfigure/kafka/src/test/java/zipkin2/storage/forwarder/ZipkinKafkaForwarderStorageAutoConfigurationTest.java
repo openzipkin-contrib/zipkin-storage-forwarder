@@ -52,7 +52,7 @@ public class ZipkinKafkaForwarderStorageAutoConfigurationTest {
         context = new AnnotationConfigApplicationContext();
         TestPropertyValues.of(
                 "zipkin.storage.type:kafka-forwarder",
-                "zipkin.storage.forwarder.kafka.bootstrap-servers:localhost:9092"
+                "zipkin.storage.kafka-forwarder.bootstrap-servers:localhost:9092"
         ).applyTo(context);
         Access.registerReporter(context);
         context.refresh();

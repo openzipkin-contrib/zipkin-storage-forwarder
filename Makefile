@@ -13,6 +13,14 @@ license-format:
 build: license-format
 	$(MVN) clean package
 
+.PHONY: docker-build
+docker-build:
+	docker-compose build
+
+.PHONY: download-zipkin
+download-zipkin:
+	curl -sSL https://zipkin.io/quickstart.sh | bash -s
+
 .PHONY: zipkin-test-http
 zipkin-test-http:
 	curl -s https://raw.githubusercontent.com/apache/incubator-zipkin/master/zipkin-lens/testdata/netflix.json | \

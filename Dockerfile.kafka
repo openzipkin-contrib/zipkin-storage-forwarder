@@ -13,7 +13,7 @@ WORKDIR /zipkin
 
 # RUN curl -SL $ZIPKIN_REPO/io/zipkin/zipkin-server/$ZIPKIN_VERSION/zipkin-server-$ZIPKIN_VERSION-exec.jar > zipkin.jar
 ADD zipkin.jar .
-ADD kafka/target/zipkin-forwarder-kafka-${FORWARDER_VERSION}.jar forwarder.jar
+#ADD kafka/target/zipkin-forwarder-kafka-${FORWARDER_VERSION}.jar forwarder.jar
 ADD autoconfigure/kafka/target/zipkin-forwarder-kafka-autoconfigure-${FORWARDER_VERSION}-module.jar forwarder-module.jar
 
 ENV STORAGE_TYPE=kafka-forwarder
@@ -24,7 +24,7 @@ EXPOSE 9410 9411
 
 CMD exec java \
     ${JAVA_OPTS} \
-    -Dloader.path='forwarder.jar,forwarder-module.jar' \
+    -Dloader.path='forwarder-module.jar,forwarder-module.jar/lib' \
     -Dspring.profiles.active=kafka-forwarder \
     -Dcom.linecorp.armeria.annotatedServiceExceptionVerbosity=all \
     -Dcom.linecorp.armeria.verboseExceptions=true \

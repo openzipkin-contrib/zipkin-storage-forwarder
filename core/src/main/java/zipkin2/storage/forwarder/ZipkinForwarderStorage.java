@@ -13,12 +13,14 @@
  */
 package zipkin2.storage.forwarder;
 
+import java.io.IOException;
 import java.util.List;
 import zipkin2.Call;
+import zipkin2.CheckResult;
 import zipkin2.DependencyLink;
 import zipkin2.Span;
 import zipkin2.codec.Encoding;
-import zipkin2.codec.SpanBytesEncoder;
+import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.storage.QueryRequest;
 import zipkin2.storage.SpanConsumer;
@@ -52,21 +54,24 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
     }
   };
 
-  final S sender;
-  final SpanBytesEncoder encoder;
+  //final AsyncReporter.Builder reporterBuilder;
+  final Sender sender;
+
+  volatile AsyncReporter<Span> reporter;
 
   ZipkinForwarderStorage(Builder<S> builder) {
-    this.sender = builder.sender;
-    switch (builder.encoding) {
-      case JSON:
-        this.encoder = SpanBytesEncoder.JSON_V2;
-        break;
-      case PROTO3:
-        this.encoder = SpanBytesEncoder.PROTO3;
-        break;
-      default:
-        throw new IllegalStateException("Unsupported encoding");
+    this.sender = builder.sender();
+  }
+
+  AsyncReporter<Span> get() {
+    if (reporter == null) {
+      synchronized (this) {
+        if (reporter == null) {
+          reporter = AsyncReporter.builder(sender).build();
+        }
+      }
     }
+    return reporter;
   }
 
   @Override public SpanStore spanStore() {
@@ -77,20 +82,32 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
     return new ZipkinForwarderSpanConsumer<>(this);
   }
 
+  @Override public CheckResult check() {
+    return get().check();
+  }
+
+  @Override public void close() throws IOException {
+    if (reporter != null) {
+      get().flush();
+      get().close();
+    }
+  }
+
   public static abstract class Builder<S extends Sender> extends StorageComponent.Builder {
-    S sender;
     Encoding encoding = Encoding.JSON;
     Integer messageMaxBytes;
 
     protected Builder() {
     }
 
-    @Override public StorageComponent.Builder strictTraceId(boolean strictTraceId) {
+    @Override
+    public Builder strictTraceId(boolean strictTraceId) {
       if (!strictTraceId) throw new IllegalArgumentException("non-strict trace ID not supported");
       return this;
     }
 
-    @Override public StorageComponent.Builder searchEnabled(boolean searchEnabled) {
+    @Override
+    public Builder searchEnabled(boolean searchEnabled) {
       if (searchEnabled) throw new IllegalArgumentException("search not supported");
       return this;
     }
@@ -106,5 +123,6 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
       return this;
     }
 
+    abstract S sender();
   }
 }
