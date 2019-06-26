@@ -22,7 +22,7 @@ import zipkin2.codec.Encoding;
 import zipkin2.storage.StorageComponent;
 import zipkin2.storage.forwarder.ZipkinKafkaForwarderStorage;
 
-@ConfigurationProperties("zipkin.storage.forwarder.kafka")
+@ConfigurationProperties("zipkin.storage.kafka-forwarder")
 public class ZipkinKafkaForwarderStorageProperties implements Serializable {
   private static final long serialVersionUID = 0L;
 

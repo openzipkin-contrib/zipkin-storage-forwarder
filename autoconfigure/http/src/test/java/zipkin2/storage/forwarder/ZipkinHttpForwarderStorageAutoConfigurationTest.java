@@ -52,7 +52,7 @@ public class ZipkinHttpForwarderStorageAutoConfigurationTest {
         context = new AnnotationConfigApplicationContext();
         TestPropertyValues.of(
                 "zipkin.storage.type:http-forwarder",
-                "zipkin.storage.forwarder.http.endpoint:http://localhost2:9411/api/v2/spans"
+                "zipkin.storage.http-forwarder.endpoint:http://localhost2:9411/api/v2/spans"
         ).applyTo(context);
         Access.registerReporter(context);
         context.refresh();

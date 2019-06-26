@@ -13,13 +13,13 @@
  */
 package zipkin2.storage.forwarder;
 
+import java.io.IOException;
 import java.util.List;
 import zipkin2.Call;
+import zipkin2.CheckResult;
 import zipkin2.DependencyLink;
 import zipkin2.Span;
-import zipkin2.codec.BytesEncoder;
 import zipkin2.codec.Encoding;
-import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.storage.QueryRequest;
@@ -54,12 +54,24 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
     }
   };
 
-  final AsyncReporter<Span> reporter;
+  //final AsyncReporter.Builder reporterBuilder;
+  final Sender sender;
+
+  volatile AsyncReporter<Span> reporter;
 
   ZipkinForwarderStorage(Builder<S> builder) {
-    final AsyncReporter.Builder inner = AsyncReporter.builder(builder.sender());
+    this.sender = builder.sender();
+  }
 
-    this.reporter = inner.build();
+  AsyncReporter<Span> get() {
+    if (reporter == null) {
+      synchronized (this) {
+        if (reporter == null) {
+          reporter = AsyncReporter.builder(sender).build();
+        }
+      }
+    }
+    return reporter;
   }
 
   @Override public SpanStore spanStore() {
@@ -68,6 +80,17 @@ public abstract class ZipkinForwarderStorage<S extends Sender> extends StorageCo
 
   @Override public SpanConsumer spanConsumer() {
     return new ZipkinForwarderSpanConsumer<>(this);
+  }
+
+  @Override public CheckResult check() {
+    return get().check();
+  }
+
+  @Override public void close() throws IOException {
+    if (reporter != null) {
+      get().flush();
+      get().close();
+    }
   }
 
   public static abstract class Builder<S extends Sender> extends StorageComponent.Builder {

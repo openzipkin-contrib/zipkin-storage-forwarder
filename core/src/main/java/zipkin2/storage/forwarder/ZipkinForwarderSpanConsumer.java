@@ -30,7 +30,7 @@ public class ZipkinForwarderSpanConsumer<S extends Sender> implements SpanConsum
   final AsyncReporter<Span> reporter;
 
   ZipkinForwarderSpanConsumer(ZipkinForwarderStorage<S> storage) {
-    this.reporter = storage.reporter;
+    this.reporter = storage.get();
   }
 
   @Override public Call<Void> accept(List<Span> spans) {
@@ -53,6 +53,7 @@ public class ZipkinForwarderSpanConsumer<S extends Sender> implements SpanConsum
     @Override
     public Void execute() throws IOException {
       reporter.report(span);
+      reporter.flush();
       return null;
     }
 
