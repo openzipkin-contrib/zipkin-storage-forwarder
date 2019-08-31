@@ -15,7 +15,7 @@ package zipkin2.storage.forwarder;
 
 import java.util.Map;
 
-import zipkin2.reporter.kafka11.KafkaSender;
+import zipkin2.reporter.kafka.KafkaSender;
 import zipkin2.storage.StorageComponent;
 
 public class ZipkinKafkaForwarderStorage extends ZipkinForwarderStorage<KafkaSender> {

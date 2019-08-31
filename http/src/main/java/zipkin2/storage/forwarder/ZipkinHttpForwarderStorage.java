@@ -13,10 +13,10 @@
  */
 package zipkin2.storage.forwarder;
 
-import zipkin2.reporter.urlconnection.URLConnectionSender;
+import zipkin2.reporter.okhttp3.OkHttpSender;
 import zipkin2.storage.StorageComponent;
 
-public class ZipkinHttpForwarderStorage extends ZipkinForwarderStorage<URLConnectionSender> {
+public class ZipkinHttpForwarderStorage extends ZipkinForwarderStorage<OkHttpSender> {
 
   ZipkinHttpForwarderStorage(Builder builder) {
     super(builder);
@@ -26,8 +26,8 @@ public class ZipkinHttpForwarderStorage extends ZipkinForwarderStorage<URLConnec
     return new Builder();
   }
 
-  public static class Builder extends ZipkinForwarderStorage.Builder<URLConnectionSender> {
-    final URLConnectionSender.Builder delegate = URLConnectionSender.newBuilder();
+  public static class Builder extends ZipkinForwarderStorage.Builder<OkHttpSender> {
+    final OkHttpSender.Builder delegate = OkHttpSender.newBuilder();
 
     public Builder endpoint(String endpoint) {
       this.delegate.endpoint(endpoint);
@@ -54,7 +54,7 @@ public class ZipkinHttpForwarderStorage extends ZipkinForwarderStorage<URLConnec
     }
 
     @Override
-    URLConnectionSender sender() {
+    OkHttpSender sender() {
       if (messageMaxBytes != null) this.delegate.messageMaxBytes(messageMaxBytes);
       return this.delegate.encoding(encoding).build();
     }

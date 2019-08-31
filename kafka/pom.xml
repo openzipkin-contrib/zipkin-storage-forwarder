@@ -33,7 +33,7 @@
   <dependencies>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
-      <artifactId>zipkin-sender-kafka11</artifactId>
+      <artifactId>zipkin-sender-kafka</artifactId>
     </dependency>
     <dependency>
       <groupId>io.github.jeqo.zipkin</groupId>

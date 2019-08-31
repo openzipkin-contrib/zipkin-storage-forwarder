@@ -17,9 +17,9 @@ services:
   forwarder-http:
     build:
       context: .
-      dockerfile: Dockerfile.http
+      dockerfile: http/Dockerfile
     ports:
-      - 9412:9411
+      - 19411:9411
     environment:
       - HTTP_FORWARDER_ENDPOINT=http://zipkin:9411/api/v2/spans
       - HTTP_FORWARDER_ENCODING=PROTO3
@@ -27,9 +27,9 @@ services:
   forwarder-kafka:
     build:
       context: .
-      dockerfile: Dockerfile.kafka
+      dockerfile: kafka/Dockerfile
     ports:
-      - 9413:9411
+      - 29411:9411
     environment:
       - KAFKA_FORWARDER_BOOTSTRAP_SERVERS=kafka-zookeeper:9092
       - KAFKA_FORWARDER_ENCODING=PROTO3
@@ -38,11 +38,11 @@ services:
     image: openzipkin/zipkin-kafka
     container_name: kafka-zookeeper
     ports:
-#      - 2181:2181
+      - 2181:2181
       - 9092:9092
       - 19092:19092
   zipkin:
-    image: openzipkin/zipkin:2.14.2
+    image: openzipkin/zipkin:2.16.2
     ports:
       - 9411:9411
     environment:
