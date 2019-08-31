@@ -19,7 +19,7 @@
 
   <groupId>io.github.jeqo.zipkin</groupId>
   <artifactId>zipkin-forwarder-parent</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.3-SNAPSHOT</version>
 
   <modules>
     <module>core</module>
@@ -272,7 +272,7 @@
     <developerConnection>scm:git:ssh://git@github.com/jeqo/zipkin-forwarder.git
     </developerConnection>
     <url>http://github.com/jeqo/zipkin-forwarder/tree/master</url>
-    <tag>0.1.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
