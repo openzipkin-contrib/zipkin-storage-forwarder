@@ -17,6 +17,10 @@ build: license-format
 docker-build:
 	docker-compose build
 
+.PHONY: docker-push
+docker-push:
+	docker-compose push
+
 .PHONY: download-zipkin
 download-zipkin:
 	curl -sSL https://zipkin.io/quickstart.sh | bash -s

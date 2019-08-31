@@ -15,6 +15,7 @@
 version: '3'
 services:
   forwarder-http:
+    image: jeqo/zipkin-forwarder-http:master-SNAPSHOT
     build:
       context: .
       dockerfile: http/Dockerfile
@@ -25,6 +26,7 @@ services:
       - HTTP_FORWARDER_ENCODING=PROTO3
       - ZIPKIN_LOGGING_LEVEL=DEBUG
   forwarder-kafka:
+    image: jeqo/zipkin-forwarder-kafka:master-SNAPSHOT
     build:
       context: .
       dockerfile: kafka/Dockerfile
