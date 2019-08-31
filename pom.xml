@@ -263,14 +263,6 @@
     </plugins>
   </build>
 
-  <developers>
-    <developer>
-      <id>jeqo</id>
-      <name>Jorge Quilcate</name>
-      <url>https://github.com/jeqo</url>
-    </developer>
-  </developers>
-
   <issueManagement>
     <system>Github</system>
     <url>https://github.com/jeqo/zipkin-forwarder/issues</url>
