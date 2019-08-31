@@ -262,4 +262,36 @@
       </plugin>
     </plugins>
   </build>
+
+  <developers>
+    <developer>
+      <id>jeqo</id>
+      <name>Jorge Quilcate</name>
+      <url>https://github.com/jeqo</url>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/jeqo/zipkin-forwarder/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:ssh://git@github.com/jeqo/zipkin-forwarder.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/jeqo/zipkin-forwarder.git
+    </developerConnection>
+    <url>http://github.com/jeqo/zipkin-forwarder/tree/master</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 </project>
