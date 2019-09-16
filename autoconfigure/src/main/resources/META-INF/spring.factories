@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+zipkin2.autoconfigure.storage.forwarder.http.ZipkinHttpForwarderStorageAutoConfiguration,\
+zipkin2.autoconfigure.storage.forwarder.kafka.ZipkinKafkaForwarderStorageAutoConfiguration

@@ -23,12 +23,7 @@
   </parent>
 
   <artifactId>zipkin-forwarder-autoconfigure</artifactId>
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>http</module>
-    <module>kafka</module>
-  </modules>
+  <packaging>jar</packaging>
 
   <properties>
     <main.basedir>${project.basedir}/..</main.basedir>
@@ -53,6 +48,18 @@
       <version>${spring-boot.version}</version>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>io.github.jeqo.zipkin</groupId>
+      <artifactId>zipkin-forwarder-http</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.github.jeqo.zipkin</groupId>
+      <artifactId>zipkin-forwarder-kafka</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-test</artifactId>
