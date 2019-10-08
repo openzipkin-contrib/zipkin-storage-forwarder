@@ -18,11 +18,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.zipkin.contrib.zipkin-storage-forwarder</groupId>
-    <artifactId>zipkin-storage-forwarder-autoconfigure</artifactId>
+    <artifactId>zipkin-autoconfigure-storage-forwarder</artifactId>
     <version>0.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>zipkin-storage-forwarder-http-autoconfigure</artifactId>
+  <artifactId>zipkin-autoconfigure-storage-forwarder-http</artifactId>
   <name>Auto Configuration: Forwarder Storage: HTTP</name>
 
   <properties>
