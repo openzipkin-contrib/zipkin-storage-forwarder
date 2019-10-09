@@ -65,10 +65,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:ssh://git@github.com/openzipkin-contrib/zipkin-storage-forwarder.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/openzipkin-contrib/zipkin-storage-forwarder.git
-    </developerConnection>
-    <url>http://github.com/openzipkin-contrib/zipkin-storage-forwarder/tree/master</url>
+    <url>https://github.com/openzipkin-contrib/zipkin-storage-forwarder</url>
+    <connection>scm:git:https://github.com/openzipkin-contrib/zipkin-storage-forwarder.git</connection>
+    <developerConnection>scm:git:https://github.com/openzipkin-contrib/zipkin-storage-forwarder.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
