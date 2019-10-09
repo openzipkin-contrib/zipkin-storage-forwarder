@@ -19,7 +19,7 @@
   <parent>
     <groupId>io.zipkin.contrib.zipkin-storage-forwarder</groupId>
     <artifactId>zipkin-storage-forwarder-parent</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>zipkin-storage-forwarder-http</artifactId>
