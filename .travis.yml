@@ -1,15 +1,52 @@
----
+# Run `travis lint` when changing this file to avoid breaking the build.
+
 cache:
   directories:
     - $HOME/.m2
 
+services: docker
+
 language: java
 
-jdk:
-  - oraclejdk8
+jdk: openjdk11
 
-services:
-  - docker
+before_install:
+  - echo checks.disable=true > ~/.testcontainers.properties
+  # allocate commits to CI, not the owner of the deploy key
+  - git config user.name "zipkinci"
+  - git config user.email "zipkinci+zipkin-dev@googlegroups.com"
+  # setup https authentication credentials, used by ./mvnw release:prepare
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://$GH_TOKEN:@github.com" > .git/credentials
 
-script:
-  - mvn test verify -B
+# Override default travis to use the maven wrapper; skip license on travis due to #1512
+install: ./mvnw install -Dlicense.skip=true -Dmaven.javadoc.skip=true -B -V
+
+script: ./travis/publish.sh
+# Don't build release tags. This avoids publish conflicts because the version commit exists both on master and the release tag.
+# See https://github.com/travis-ci/travis-ci/issues/1532
+branches:
+  except:
+    - /^[0-9]/
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/ead3c37d57527214e9f2
+      - https://webhooks.gitter.im/e/e57478303f87ecd7bffc
+    on_success: change
+    on_failure: always
+
+env:
+  global:
+    # Ex. travis encrypt BINTRAY_USER=your_github_account
+    - secure: "p6GAPH5ScTRaHHgHiaJKGBVRig3rSgYs89RPMkUsotN7kK53KmMO20HBoCWJqCpU1HLEXvh7/AusTbFyBSjgEQl2kHbuaTBoPPanQo4Bd7qTaL/j8RAYu5uE0mgEow5guYCCDqA4Z77xTlQTC7jMm8uDyAFO7G9RS5ZnuZXk1iGbmb5h69be/sk22JxX2IhLzM6DT+w9cHah7sLFr9B18A7yvMPImrNdsFOspyNtqu+UzuX2PndRR2yTgwIT34p/+3e69+UtTVHKlmtrduTHX4LmC2Zgslqng38ViKsPI/CVE32bshi0O3NIqF4mnTkQyLjbsjJEF82jdl+Z+v13SGGPUSKMzv68FQHHOKtEwteTteXR804/AJgRGVY+SMZODMKUJGs2F/kt6Q+/p6RLdmKOY+jUAPPhzBIWB2oSH18BwSsWyzLVTf6DAtwPD6xbZD7GAfo5WKIGG66LGPd5TMA79dFN/uaMv2PN+USDQ+DaIp2hk5M3WgzgrmnLH97y0iXwYzKJy7BKpNXewLDHwjGmr6XUA/bSeKwUUDfIZi2MdsXiCyQjbJ7qeFn8FWp1dQBxfH+FVqqgIe5EsFX01CK7VR6JEwdqNTjDwW0BoY606OiLw6sff18M60RJVlfC+x//k1C/5AEjxaB1FWDLE4ul/ydWCsvPTbKnzV+OiCM="
+    # Ex. travis encrypt BINTRAY_KEY=xxx-https://bintray.com/profile/edit-xxx --add
+    - secure: "ezc58DXSSV3fojt2jx+uSW1Qu3BpdB4NEWKbAUNS/j/E+SfEPmPSj5VWKa8cWDAKHw17GCBwjUZTS6fZLNDTNW4eB+VGjKzv0N/yTCwoCVLNjOvQv3cPVIh/G5Uu8vI+QwmoAIAvIg6qKkrE3x8n3Y4T6cBtl5U1g0aE+1euIyXY3IwGv3a2D+Ywn0ezEjl5yfz7NUBVtZzfAhmdtohsXTPlMavDQqysRfWhdmO+DXT9y7vjQdB1uIfYb4fh6EdOOXlTksGS7c1lRnDVZCBusm8+OESMPheltYY/LiB4nCzohqEyshI8SlcYDuenWj1KZXJ3KxrbOa7lWsvJ8GeqWqZQSydsDyiA3CTKaxmryz1I2Q749I4Q+B0wMwTZrfaBke+veB6MUhOaxDx1rgUPN9d3k2voOHpcxbGV+bftK8g72wgkjr2WdWGhIDuFn0VsQqMyGX7h4N2pHOXvAcNHsMytqBE//hsCcczVhyRXelvrD2hcB1JcFaCCLzFlgbWHulqV1nsyaz1XtjJiR/hgCktTtT+RzaE298LgQK1V7bpYldbyW/lQvIKQqd4gFHmYXYecJASUASW+Fv5kUdLud6n7ifnTwNcYRsm+jAjI1gP3nFD7+cVlBtirHKYtXbpctKB4mIwyqWukwCamITlIep5nqrz82zKDqj9a+ATCnZQ="
+    # Ex. travis encrypt GH_TOKEN=XXX-https://github.com/settings/tokens-XXX --add
+    - secure: "JZTqB3dNfdrHSGaR9SmhVqlluwbI+Yugde5Ce3HQ85nifJWVl6jdikeS4MC9lWE0e+I6XUp5ohODuAk+pN/98Wp2Y8durL4DJ8XkvR3KRDV58n6zT8F2eDHnd0n4ycqyq5Srr8Wa2EHLyRxiWmNmnQPZZ0d+I6ZoEVFhRehyYhZPdwoNN8kF7Rk1/Ac0IlPGdVFw+4AVa7uODpQncLEAsGNSoFi5IA/U5y4o0/Yfl2kf0paDeBYkVZgKCbDPFT0n8f96G5VE+ciSmyvK2B39n3fvy0eVlo4YFKTuui5SwpOvGSR3FEEZ2czuTsOWPpAfUW+RWI3dAjmmF+KQ/pIFaS6KpP3nr/0KbwXLwMxOhFhIHKXXm+CZwPWF/qnk9a8ngmdWHU5/HAG6tfLxyt8kN7Nyxf1/O/JfPNZi5QG+4nBSzlOcAVePWyvnmkTvPJcWY6sXAR74fa6Lrreziffb8Yq4p4lIOkeel/UcXG3MdjzHbzFcxKEN9BoDBJGfKq6y3zKCrI5RaeHfFMMeCKjLqfV/VHq5nmmdgrQLCgoimdSsQ1kGho7G+IxPQ6Pe9h5VTSfVuiGsgvFxxja0ltEGLZxcib+cPAh+pKFX6xBCDSVFZ3o1riyLC6JxY6gsCIzYT9AlTDh4QYLr4Eb72sccOP0aaBQ8EE2DZscdYAqlYZ0="
+    # Ex. travis encrypt SONATYPE_USER=your_sonatype_account
+    - secure: "KS5WH6i3lkSg/pw7wyuH5WeOtm9g0zcbu5cM9DLKYEh3fbNr0+lRbiQmoJMNSN3RsCb4kL4Tg8YRGBgNnIvX2v76s/SwceOVQTXcIBxM8YAIzjHeGaNXa5j4f8mOOBbLW70o5uEUqlTCPU/zkvXDPsuFAxF4vCn9R4fgb2l5zITaI5+HBsoC7gz8bPsLFIV3w605fEAqgIJB/eka3LVP0QqYRtk+hcxBfrnD/7oTQqf2VMPR1l4EKabDvnp2uYQuD6dKy+gynK+NQpsgvWr9STEqNhYYJlVu2wn+xf9qfXCePkNx7bk79C+X0nqj8Ma/SD/8ESOGWzsgyAO5IW4Xq4HvQRcB9vwr/39/OHS+GZ1H/NA9ZeS/1cGKVExMB2AqQkEmydx+Ithm/9jLK7ZAVK6iSfDk3XxVfpqhZFClsC025ESpVz/wN8pM0LrBY2fIcwXZnKO8ahSnzVSqv6nxtxFsSF7l/3yRoGI8GKq+jbj21/afBGi9yane+OzcmIfjZ2NI6JrvY468qVKWt6y+boq4IPdhrP68ybzO5EazsUzr387SNMSIrUzy43RC81/uoD8tgnf3ZVsVoBsg6h15cvtSl+tPxqrZIyCx99J+AxRLJOHiOjKaTHlk5X+jFc9qGu5OsTqR6NfGcgaPfF06uvNMgayRdJjVig5aaI6L97Y="
+    # Ex. travis encrypt SONATYPE_PASSWORD=your_sonatype_password
+    - secure: "FygOtuZ4A+iY7LmL3kqxoCMPwf/MoZ7802pPZQEtVCWLW7Fxn/wL8NVb1NZ+5Nb8NzZLShs9ZzOfsfbVF4q2kyIsgMsqdmTK8qUIIKqqN5Mq0uDfyrUdhNLV23mu9uJuaeplFQ9q+vcCVYr+jftsMYJzwIUBBGz02MDjMEHIUECPCeYFCKYftyzCaxsiTkBcPth6ymZGmlvSHeOyIztgIOy4l6dI1SUUPw9PyOyAIK2xZ1PqnTN206L5U7/0I86nJhvFL7G04KJfz89D7Nwh9jsaAACGU0FKf6neahhnwE+JALhXSpoVwX8TbREi2cNN2qLth4rxeQ/QrQI1Y9gvNojAuJZBpKL/Ineo9xW+z5f2NpxtPyAAhDaN/h8ZAGcy2lLGzYmSkxtL4F5rPwcg/byTePj/U18MYNR+GKgE5Zk6iSva46kclkhW+0Mg9VuLEeVnb20tebNUHCX3WuxAm0r/ZGk2nz1GbQ/sSCwZ3rA6vGao7OGpuT0N11Gn1wPKV9r0aDhZzvTpDc/IgevVEsxstWGKc32PBffHtkDymvRS3EbBQqw5TGbc/3BqVEp1odJHsfy2+6Ur+q+8i4r8C5EUJfFUPQgpV1soWPRhLNLkKCAf4dMNcgpp3YGWVQeVdIng4+rI8Kn+Glu6SAVNrAQIZbVxfbwBTekLGpoYio0="
+
