@@ -15,10 +15,11 @@
 version: '3'
 services:
   forwarder-http:
-    image: jeqo/zipkin-forwarder-http:master-SNAPSHOT
+    image: openzipkincontrib/zipkin-storage-forwarder-http
+    container_name: forwarder-http
     build:
-      context: .
-      dockerfile: http/Dockerfile
+      context: ..
+      dockerfile: docker/http/Dockerfile
     ports:
       - 19411:9411
     environment:
@@ -26,10 +27,11 @@ services:
       - HTTP_FORWARDER_ENCODING=PROTO3
       - ZIPKIN_LOGGING_LEVEL=DEBUG
   forwarder-kafka:
-    image: jeqo/zipkin-forwarder-kafka:master-SNAPSHOT
+    image: openzipkincontrib/zipkin-storage-forwarder-kafka
+    container_name: forwarder-kafka
     build:
-      context: .
-      dockerfile: kafka/Dockerfile
+      context: ..
+      dockerfile: docker/kafka/Dockerfile
     ports:
       - 29411:9411
     environment:
@@ -44,7 +46,8 @@ services:
       - 9092:9092
       - 19092:19092
   zipkin:
-    image: openzipkin/zipkin:2.16.2
+    image: openzipkin/zipkin:2.17.2
+    container_name: zipkin
     ports:
       - 9411:9411
     environment:

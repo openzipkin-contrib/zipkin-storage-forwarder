@@ -12,22 +12,21 @@
 # the License.
 #
 
-FROM alpine
+FROM openzipkin/zipkin-builder
 
-ENV USER jeqo
-ENV VERSION master-SNAPSHOT
+WORKDIR /code
+COPY . /code
+RUN mvn -B --no-transfer-progress package -DskipTests=true -pl autoconfigure -am
 
-WORKDIR /zipkin
+RUN \
+  cd /code && mkdir -p /zipkin-forwarder && cp autoconfigure/kafka/target/zipkin-autoconfigure-storage-forwarder-kafka-*-module.jar /zipkin-forwarder && cd /zipkin-forwarder && jar xf *.jar && rm *.jar
 
-RUN apk add curl unzip && \
-  curl -SL https://jitpack.io/com/github/${USER}/zipkin-forwarder/zipkin-forwarder-kafka-autoconfigure/${VERSION}/zipkin-forwarder-kafka-autoconfigure-${VERSION}-module.jar > forwarder.jar && \
-  echo > .forwarder_profile && \
-  unzip forwarder.jar -d forwarder && \
-  rm forwarder.jar
+FROM openzipkin/zipkin:2.17.2
+MAINTAINER Zipkin "https://zipkin.io/"
 
-FROM openzipkin/zipkin:2.16.2
+COPY --from=0 /zipkin-forwarder/ /zipkin/lib/
 
-COPY --from=0  --chown=zipkin /zipkin/ /zipkin/
+RUN echo > .forwarder_profile
 
-ENV MODULE_OPTS="-Dloader.path=forwarder -Dspring.profiles.active=kafka-forwarder"
+ENV MODULE_OPTS="-Dloader.path=lib -Dspring.profiles.active=kafka-forwarder"
 ENV STORAGE_TYPE=kafka-forwarder
