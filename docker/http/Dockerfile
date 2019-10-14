@@ -16,7 +16,7 @@ FROM openzipkin/zipkin-builder
 
 WORKDIR /code
 COPY . /code
-RUN mvn -B --no-transfer-progress package -DskipTests=true -pl autoconfigure -am
+RUN mvn -B --no-transfer-progress package -DskipTests=true -pl autoconfigure/http -am
 
 RUN \
   cd /code && mkdir -p /zipkin-forwarder && cp autoconfigure/http/target/zipkin-autoconfigure-storage-forwarder-http-*-module.jar /zipkin-forwarder && cd /zipkin-forwarder && jar xf *.jar && rm *.jar
