@@ -50,11 +50,6 @@
       <version>${spring-boot.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>${armeria.groupId}</groupId>
-      <artifactId>armeria</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
