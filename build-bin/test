@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -ue
+
+# This script runs the tests of the project.
+#
+# See [README.md] for an explanation of this and how CI should use it.
+
+echo "Running Maven tests and integration tests..."
+./mvnw -nsu verify
+
+echo "Building Docker image..."
+export MAVEN_CLASSIFIER=module
+export RELEASE_FROM_MAVEN_BUILD=true
+build-bin/docker/docker_build openzipkin-contrib/zipkin-storage-forwarder:test
+
+echo "Verifying Docker image..."
+# This just makes sure containers run and the HEALTHCHECK works (for now..)
+docker-compose -f build-bin/docker-compose.test.yml up -d --quiet-pull
+if build-bin/docker/block_on_health sut; then
+  health_rc=0
+else
+  health_rc=1
+  docker logs sut
+fi
+docker-compose -f build-bin/docker-compose.test.yml down
+exit $health_rc

@@ -1,0 +1,24 @@
+# permit depends_on/condition: service_healthy
+version: "2.4"
+
+services:
+  kafka:
+    image: ghcr.io/openzipkin/zipkin-kafka
+    container_name: kafka
+    ports:
+      # Processes on the Docker host can set bootstrap server list to localhost:19092
+      - 19092:19092
+  # Use fixed service and container name 'sut; so our test script can copy/pasta
+  sut:
+    # This is the image just built. It is not in a remote repository.
+    image: openzipkin-contrib/zipkin-storage-forwarder:test
+    container_name: sut
+    ports:
+      - 9411:9411
+    environment:
+      STORAGE_TYPE: kafka-forwarder
+      KAFKA_FORWARDER_BOOTSTRAP_SERVERS: kafka:9092
+    command: --logging.level.zipkin2=DEBUG
+    depends_on:
+      kafka:
+        condition: service_healthy
