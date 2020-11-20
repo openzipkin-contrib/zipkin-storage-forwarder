@@ -1,9 +1,19 @@
-## zipkin-storage-forwarder Docker images
+# zipkin-storage-forwarder Docker image
 
-To build a zipkin-storage-forwarder-http and zipkin-storage-forwarder-kafka Docker images, in the top level of the repository, run something
+To build a zipkin-storage-forwarder Docker image, in the top level of the repository, run something
 like
 
+## Building
+
+To build a zipkin-storage-forwarder Docker image from source, in the top level of the repository, run:
+
+
 ```bash
-docker build -t openzipkincontrib/zipkin-storage-forwarder-http:test -f docker/http/Dockerfile .
-docker build -t openzipkincontrib/zipkin-storage-forwarder-kafka:test -f docker/kafka/Dockerfile .
+$ build-bin/docker/docker_build openzipkin-contrib/zipkin-storage-forwarder:test
+```
+
+To build from a published version, run this instead:
+
+```bash
+$ build-bin/docker/docker_build openzipkin-contrib/zipkin-storage-forwarder:test 0.18.1
 ```

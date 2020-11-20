@@ -1,0 +1,13 @@
+# When enabled, this allows shorter env properties (ex -Dspring.profiles.active=forwarder)
+zipkin:
+  internal:
+    module:
+      forwarder: zipkin2.module.storage.forwarder.ZipkinForwarderStorageModule
+  storage:
+    http-forwarder:
+      endpoint: ${HTTP_FORWARDER_ENDPOINT:http://localhost:9411/api/v2/spans}
+      encoding: ${HTTP_FORWARDER_ENCODING:JSON}
+    kafka-forwarder:
+      bootstrap-servers: ${KAFKA_FORWARDER_BOOTSTRAP_SERVERS:localhost:9092}
+      encoding: ${KAFKA_FORWARDER_ENCODING:PROTO3}
+      topic: ${KAFKA_FORWARDER_TOPIC:zipkin}
