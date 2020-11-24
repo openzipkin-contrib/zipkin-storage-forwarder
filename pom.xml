@@ -19,7 +19,7 @@
 
   <groupId>io.zipkin.contrib.zipkin-storage-forwarder</groupId>
   <artifactId>zipkin-storage-forwarder-parent</artifactId>
-  <version>0.3.1</version>
+  <version>0.3.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -113,7 +113,7 @@
     <url>https://github.com/openzipkin-contrib/zipkin-storage-forwarder</url>
     <connection>scm:git:https://github.com/openzipkin-contrib/zipkin-storage-forwarder.git</connection>
     <developerConnection>scm:git:https://github.com/openzipkin-contrib/zipkin-storage-forwarder.git</developerConnection>
-    <tag>0.3.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- Developer section is needed for Maven Central, but doesn't need to include each person -->
