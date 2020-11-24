@@ -28,7 +28,7 @@ import static org.testcontainers.utility.DockerImageName.parse;
 
 public class ITHttpForwarderStorage {
   @Rule
-  public GenericContainer zipkin = new GenericContainer<>(parse("ghcr.io/openzipkin/zipkin:2.22.2"))
+  public GenericContainer zipkin = new GenericContainer<>(parse("ghcr.io/openzipkin/zipkin:2.23.0"))
     .waitingFor(Wait.forHealthcheck());
 
   OkHttpSender sender;
