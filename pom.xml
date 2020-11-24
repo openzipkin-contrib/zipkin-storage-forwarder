@@ -71,6 +71,8 @@
     <errorprone.version>2.4.0</errorprone.version>
     <log4j.version>2.14.0</log4j.version>
 
+    <license.skip>${skipTests}</license.skip>
+
     <animal-sniffer-maven-plugin.version>1.19</animal-sniffer-maven-plugin.version>
     <go-offline-maven-plugin.version>1.2.7</go-offline-maven-plugin.version>
     <!-- TODO: cleanup any redundant ignores now also in the 4.0 release (once final) -->
@@ -210,6 +212,13 @@
           <configuration>
             <!-- Add dependencies indirectly referenced by build plugins -->
             <dynamicDependencies>
+              <!-- animal sniffer implicitly uses this -->
+              <DynamicDependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <repositoryType>PLUGIN</repositoryType>
+              </DynamicDependency>
               <DynamicDependency>
                 <groupId>org.codehaus.mojo.signature</groupId>
                 <artifactId>${main.signature.artifact}</artifactId>
@@ -391,7 +400,7 @@
         <artifactId>license-maven-plugin</artifactId>
         <version>${license-maven-plugin.version}</version>
         <configuration>
-          <skip>${skipTests}</skip>
+          <skip>${license.skip}</skip>
           <header>${main.basedir}/src/etc/header.txt</header>
           <mapping>
             <!-- Don't use javadoc style as this makes code formatters break it by adding tags! -->
