@@ -55,16 +55,16 @@
     <!-- groupId overrinds allow testing feature branches with jitpack -->
     <zipkin.groupId>io.zipkin.zipkin2</zipkin.groupId>
     <!-- when updating, update docker/Dockerfile and core/src/test/java/zipkin2/storage/forwarder/IT* -->
-    <zipkin.version>2.22.2</zipkin.version>
-    <zipkin-reporter.version>2.16.0</zipkin-reporter.version>
-    <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+    <zipkin.version>2.23.0</zipkin.version>
+    <zipkin-reporter.version>2.16.1</zipkin-reporter.version>
+    <spring-boot.version>2.4.0</spring-boot.version>
     <jackson.version>2.11.3</jackson.version>
 
     <kafka.version>2.6.0</kafka.version>
 
     <junit-jupiter.version>5.7.0</junit-jupiter.version>
     <testcontainers.version>1.15.0</testcontainers.version>
-    <assertj.version>3.18.0</assertj.version>
+    <assertj.version>3.18.1</assertj.version>
 
     <!-- override to set exclusions per-project -->
     <errorprone.args />
@@ -397,23 +397,26 @@
             <!-- Don't use javadoc style as this makes code formatters break it by adding tags! -->
             <java>SLASHSTAR_STYLE</java>
             <!-- build-bin/docker -->
-            <block_on_health>SCRIPT_STYLE</block_on_health>
             <configure_docker>SCRIPT_STYLE</configure_docker>
             <configure_docker_push>SCRIPT_STYLE</configure_docker_push>
             <docker_arch>SCRIPT_STYLE</docker_arch>
             <docker_args>SCRIPT_STYLE</docker_args>
+            <docker_block_on_health>SCRIPT_STYLE</docker_block_on_health>
             <docker_build>SCRIPT_STYLE</docker_build>
             <docker_push>SCRIPT_STYLE</docker_push>
+            <docker_test_image>SCRIPT_STYLE</docker_test_image>
             <!-- build-bin/git -->
             <login_git>SCRIPT_STYLE</login_git>
             <version_from_trigger_tag>SCRIPT_STYLE</version_from_trigger_tag>
             <!-- build-bin/gpg -->
             <configure_gpg>SCRIPT_STYLE</configure_gpg>
             <!-- build-bin/maven -->
+            <maven_build>SCRIPT_STYLE</maven_build>
             <maven_build_or_unjar>SCRIPT_STYLE</maven_build_or_unjar>
             <maven_deploy>SCRIPT_STYLE</maven_deploy>
             <maven_go_offline>SCRIPT_STYLE</maven_go_offline>
             <maven_release>SCRIPT_STYLE</maven_release>
+            <maven_opts>SCRIPT_STYLE</maven_opts>
             <maven_unjar>SCRIPT_STYLE</maven_unjar>
           </mapping>
           <excludes>
