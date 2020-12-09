@@ -1,6 +1,4 @@
-#!/bin/sh
-
-set -ue
+#!/bin/sh -ue
 
 # Pushes docker as part of `deploy` or from a trigger tag
 version=${1:-master}
@@ -14,4 +12,4 @@ esac
 
 # openzipkin-contrib is named differently in docker.io (openzipkincontrib). Skip the latter for now.
 export DOCKER_RELEASE_REPOS=ghcr.io
-build-bin/docker/docker_push openzipkin-contrib/zipkin-storage-forwarder ${version}
+build-bin/docker/docker_push openzipkin-contrib/zipkin-storage-kafka ${version}

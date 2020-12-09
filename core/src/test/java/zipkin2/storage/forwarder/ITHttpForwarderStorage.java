@@ -13,12 +13,17 @@
  */
 package zipkin2.storage.forwarder;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import zipkin2.Span;
 import zipkin2.codec.Encoding;
 import zipkin2.reporter.okhttp3.OkHttpSender;
@@ -26,15 +31,28 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 import static java.util.Collections.singletonList;
 import static org.testcontainers.utility.DockerImageName.parse;
 
-public class ITHttpForwarderStorage {
-  @Rule
-  public GenericContainer zipkin = new GenericContainer<>(parse("ghcr.io/openzipkin/zipkin:2.23.0"))
-    .waitingFor(Wait.forHealthcheck());
+@Testcontainers
+class ITHttpForwarderStorage {
+  static final Logger LOGGER = LoggerFactory.getLogger(ITKafkaForwarderStorage.class);
+
+  // mostly waiting for https://github.com/testcontainers/testcontainers-java/issues/3537
+  static final class ZipkinContainer extends GenericContainer<ZipkinContainer> {
+    ZipkinContainer() {
+      super(parse("ghcr.io/openzipkin/zipkin-slim:2.23.1"));
+      if ("true".equals(System.getProperty("docker.skip"))) {
+        throw new TestAbortedException("${docker.skip} == true");
+      }
+      waitStrategy = Wait.forHealthcheck();
+      withLogConsumer(new Slf4jLogConsumer(LOGGER));
+    }
+  }
+
+  @Container ZipkinContainer zipkin = new ZipkinContainer();
 
   OkHttpSender sender;
   ForwarderStorage storage;
 
-  @Before public void open() {
+  @BeforeEach void open() {
     sender = OkHttpSender.newBuilder()
       .endpoint("http://" + zipkin.getContainerIpAddress() + ":" + zipkin.getMappedPort(9411)
         + "/api/v2/spans")
@@ -44,12 +62,12 @@ public class ITHttpForwarderStorage {
     storage = ForwarderStorage.newBuilder(sender).build();
   }
 
-  @After public void close() {
+  @AfterEach void close() {
     storage.close();
     sender.close();
   }
 
-  @Test public void shouldSendSpansToUrlEndpoint() throws Exception {
+  @Test void shouldSendSpansToUrlEndpoint() throws Exception {
     Span span = Span.newBuilder().traceId("a").id("b").name("test").duration(100).build();
 
     storage.spanConsumer().accept(singletonList(span)).execute();
