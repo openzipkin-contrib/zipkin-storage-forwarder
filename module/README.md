@@ -25,5 +25,5 @@ $ STORAGE_TYPE=http-forwarder \
     -Dloader.path='forwarder.jar,forwarder.jar!/lib' \
     -Dspring.profiles.active=forwarder \
     -cp zipkin.jar \
-    org.springframework.boot.loader.PropertiesLauncher
+    org.springframework.boot.loader.launch.PropertiesLauncher
 ```

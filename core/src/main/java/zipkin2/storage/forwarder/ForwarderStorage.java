@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 The OpenZipkin Authors
+ * Copyright 2019-2024 The OpenZipkin Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -125,10 +125,14 @@ public final class ForwarderStorage extends StorageComponent {
   }
 
   @Override public CheckResult check() {
-    return asyncReporter.check();
+    zipkin2.reporter.CheckResult check = asyncReporter.check();
+    if (check.ok()) {
+      return CheckResult.OK;
+    }
+    return CheckResult.failed(check.error());
   }
 
-  @Override public final String toString() {
+  @Override public String toString() {
     return asyncReporter.toString().replace("AsyncReporter", "ForwarderStorage");
   }
 

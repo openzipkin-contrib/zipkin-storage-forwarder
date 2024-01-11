@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2019-2020 The OpenZipkin Authors
+    Copyright 2019-2024 The OpenZipkin Authors
 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
     in compliance with the License. You may obtain a copy of the License at
@@ -21,7 +21,7 @@
   <parent>
     <groupId>io.zipkin.contrib.zipkin-storage-forwarder</groupId>
     <artifactId>zipkin-storage-forwarder-parent</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>zipkin-module-storage-forwarder</artifactId>
@@ -29,6 +29,11 @@
 
   <properties>
     <main.basedir>${project.basedir}/..</main.basedir>
+
+    <!-- Only used in zipkin-server, which has floor JRE 17 -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
   <dependencies>
@@ -53,6 +58,12 @@
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
       <version>${zipkin-reporter.version}</version>
+    </dependency>
+    <!-- Avoid this error when integrated: Log4j2 could not find a logging implementation. -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
     </dependency>
 
     <dependency>
@@ -102,21 +113,25 @@
           <classifier>module</classifier>
           <!-- https://github.com/spring-projects/spring-boot/issues/3426 transitive exclude doesn't work -->
           <excludeGroupIds>
-            ${zipkin.groupId},org.springframework.boot,org.springframework,com.fasterxml.jackson.core,com.google.auto.value,com.google.code.gson,org.reactivestreams,com.google.code.findbugs,javax.annotation,org.slf4j,io.netty,io.micrometer,org.hdrhistogram,org.latencyutils,javax.inject,com.fasterxml.jackson.datatype
+            ${zipkin.groupId},org.springframework.boot,org.springframework,com.fasterxml.jackson.core,com.google.auto.value,org.reactivestreams,com.google.code.findbugs,javax.annotation,org.slf4j,io.netty,io.micrometer,org.hdrhistogram,org.latencyutils,javax.inject,com.fasterxml.jackson.datatype,com.aayushatharva.brotli4j,commons-logging
           </excludeGroupIds>
           <excludes>
             <!-- zipkin-server packages this -->
-            <dependency>
+            <exclude>
               <groupId>org.apache.kafka</groupId>
               <artifactId>kafka-clients</artifactId>
-            </dependency>
+            </exclude>
+            <exclude>
+              <groupId>io.zipkin.reporter2</groupId>
+              <artifactId>zipkin-reporter</artifactId>
+            </exclude>
           </excludes>
         </configuration>
         <dependencies>
           <dependency>
             <groupId>io.zipkin.layout</groupId>
             <artifactId>zipkin-layout-factory</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
           </dependency>
         </dependencies>
       </plugin>

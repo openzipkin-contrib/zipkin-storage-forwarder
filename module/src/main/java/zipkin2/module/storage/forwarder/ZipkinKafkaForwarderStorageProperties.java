@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 The OpenZipkin Authors
+ * Copyright 2019-2024 The OpenZipkin Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,7 +16,7 @@ package zipkin2.module.storage.forwarder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import zipkin2.codec.Encoding;
+import zipkin2.reporter.Encoding;
 
 @ConfigurationProperties("zipkin.storage.kafka-forwarder")
 public class ZipkinKafkaForwarderStorageProperties {

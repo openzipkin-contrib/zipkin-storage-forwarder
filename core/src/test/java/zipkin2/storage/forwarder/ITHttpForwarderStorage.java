@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 The OpenZipkin Authors
+ * Copyright 2019-2024 The OpenZipkin Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,8 +15,8 @@ package zipkin2.storage.forwarder;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -25,24 +25,21 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import zipkin2.Span;
-import zipkin2.codec.Encoding;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
 import static java.util.Collections.singletonList;
 import static org.testcontainers.utility.DockerImageName.parse;
 
-@Testcontainers
+@Tag("docker")
+@Testcontainers(disabledWithoutDocker = true)
 class ITHttpForwarderStorage {
   static final Logger LOGGER = LoggerFactory.getLogger(ITKafkaForwarderStorage.class);
 
-  // mostly waiting for https://github.com/testcontainers/testcontainers-java/issues/3537
   static final class ZipkinContainer extends GenericContainer<ZipkinContainer> {
     ZipkinContainer() {
-      super(parse("ghcr.io/openzipkin/zipkin-slim:2.23.2"));
-      if ("true".equals(System.getProperty("docker.skip"))) {
-        throw new TestAbortedException("${docker.skip} == true");
-      }
+      super(parse("ghcr.io/openzipkin/zipkin-slim:3.0.0"));
       waitStrategy = Wait.forHealthcheck();
+      withExposedPorts(9411);
       withLogConsumer(new Slf4jLogConsumer(LOGGER));
     }
   }
@@ -54,9 +51,8 @@ class ITHttpForwarderStorage {
 
   @BeforeEach void open() {
     sender = OkHttpSender.newBuilder()
-      .endpoint("http://" + zipkin.getContainerIpAddress() + ":" + zipkin.getMappedPort(9411)
-        + "/api/v2/spans")
-      .encoding(Encoding.JSON)
+      .endpoint("http://" + zipkin.getHost() + ":" + zipkin.getMappedPort(9411) + "/api/v2/spans")
+      .encoding(zipkin2.reporter.Encoding.JSON)
       .build();
 
     storage = ForwarderStorage.newBuilder(sender).build();
