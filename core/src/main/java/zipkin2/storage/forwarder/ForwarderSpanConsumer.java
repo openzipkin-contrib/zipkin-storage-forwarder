@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 The OpenZipkin Authors
+ * Copyright 2019-2024 The OpenZipkin Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -21,13 +21,7 @@ import zipkin2.reporter.AsyncReporter;
 import zipkin2.storage.SpanConsumer;
 
 /** Forwards a list of {@linkplain Span spans} to {@link AsyncReporter#report(Object)}. */
-final class ForwarderSpanConsumer implements SpanConsumer {
-  final AsyncReporter<Span> asyncReporter;
-
-  ForwarderSpanConsumer(AsyncReporter<Span> asyncReporter) {
-    this.asyncReporter = asyncReporter;
-  }
-
+record ForwarderSpanConsumer(AsyncReporter<Span> asyncReporter) implements SpanConsumer {
   @Override public Call<Void> accept(List<Span> spans) {
     if (spans.isEmpty()) return Call.create(null);
     return new ReporterCall(asyncReporter, spans);
