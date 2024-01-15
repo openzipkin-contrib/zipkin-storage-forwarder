@@ -13,13 +13,15 @@
  */
 package zipkin2.storage.forwarder;
 
+import java.util.Collections;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import zipkin2.Call;
 import zipkin2.CheckResult;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.ReporterMetrics;
-import zipkin2.reporter.Sender;
 import zipkin2.storage.AutocompleteTags;
 import zipkin2.storage.ServiceAndSpanNames;
 import zipkin2.storage.SpanConsumer;
@@ -32,14 +34,16 @@ import zipkin2.storage.Traces;
  * {@link AsyncReporter#report(Object)}.
  */
 public final class ForwarderStorage extends StorageComponent {
-  public static Builder newBuilder(Sender sender) {  // visible for testing
+  public static Builder newBuilder(BytesMessageSender sender) {  // visible for testing
     return new Builder(sender);
   }
 
   public static final class Builder extends StorageComponent.Builder {
+    final BytesMessageSender sender;
     final AsyncReporter.Builder delegate;
 
-    Builder(Sender sender) {
+    Builder(BytesMessageSender sender) {
+      this.sender = sender;
       delegate = AsyncReporter.builder(sender);
     }
 
@@ -94,14 +98,16 @@ public final class ForwarderStorage extends StorageComponent {
     }
 
     @Override public ForwarderStorage build() {
-      return new ForwarderStorage(delegate.build());
+      return new ForwarderStorage(this);
     }
   }
 
+  final BytesMessageSender sender;
   final AsyncReporter<Span> asyncReporter;
 
-  ForwarderStorage(AsyncReporter<Span> asyncReporter) {
-    this.asyncReporter = asyncReporter;
+  ForwarderStorage(Builder builder) {
+    this.sender = builder.sender;
+    this.asyncReporter = builder.delegate.build();
   }
 
   @Override public SpanStore spanStore() {
@@ -125,11 +131,13 @@ public final class ForwarderStorage extends StorageComponent {
   }
 
   @Override public CheckResult check() {
-    zipkin2.reporter.CheckResult check = asyncReporter.check();
-    if (check.ok()) {
+    try {
+      sender.send(Collections.emptyList());
       return CheckResult.OK;
+    } catch (Throwable t) {
+      Call.propagateIfFatal(t);
+      return CheckResult.failed(t);
     }
-    return CheckResult.failed(check.error());
   }
 
   @Override public String toString() {

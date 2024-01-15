@@ -37,7 +37,7 @@ class ITHttpForwarderStorage {
 
   static final class ZipkinContainer extends GenericContainer<ZipkinContainer> {
     ZipkinContainer() {
-      super(parse("ghcr.io/openzipkin/zipkin-slim:3.0.2"));
+      super(parse("ghcr.io/openzipkin/zipkin-slim:3.0.3"));
       waitStrategy = Wait.forHealthcheck();
       withExposedPorts(9411);
       withLogConsumer(new Slf4jLogConsumer(LOGGER));

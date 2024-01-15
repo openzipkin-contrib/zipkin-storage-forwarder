@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 The OpenZipkin Authors
+ * Copyright 2019-2024 The OpenZipkin Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -19,7 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import zipkin2.reporter.Sender;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.kafka.KafkaSender;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 import zipkin2.storage.StorageComponent;
@@ -56,8 +56,8 @@ public class ZipkinForwarderStorageModule {
     return builder.build();
   }
 
-  @ConditionalOnBean(Sender.class)
-  @Bean StorageComponent storage(Sender sender) {
+  @ConditionalOnBean(BytesMessageSender.class)
+  @Bean StorageComponent storage(BytesMessageSender sender) {
     return ForwarderStorage.newBuilder(sender).build();
   }
 }
